@@ -30,7 +30,7 @@ class Cart(db.Model):
     def toDict(self):
         return{
             'id': self.id,
-            'quantitiy': self.quantity,
+            'quantity': self.quantity,
             'product_id': self.product_id,
             'name': self.product.name,
             'price': self.product.price

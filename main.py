@@ -45,29 +45,34 @@ def index():
     else:
         products = Product.query.all()
     cart = Cart.query.all()
-    total = cart_total
+    total = cart_total()
     return render_template('app.html', products=products, cart=cart, total=total)
 
 @app.route('/cart/<id>', methods=['GET'])
 def add_action(id):
-    cart = Cart(
-        quantity=1, 
-        product_id=id,
-    )
-    db.session.add(cart)
+    item = Cart.query.filter_by(product_id=id).first()
+    if item :
+        item.quantity = item.quantity + 1
+    else :
+        item = Cart(
+            quantity=1, 
+            product_id=id,
+        )
+    db.session.add(item)
     db.session.commit()
-    return redirect('/')
+    return redirect(request.referrer)
 
-@app.route('/api/cart/<id>', methods=['POST'])
+@app.route('/cart/<id>', methods=['POST'])
 def edit_action(id):
     data = request.form
     cart = Cart.query.get(id)
-    if data['quantitiy'] == 0:
+    if data['quantity'] == '0':
         db.session.delete(cart)
     else:
+        cart.quantity = data['quantity'] 
         db.session.add(cart)
     db.session.commit()
-    return redirect('/')
+    return redirect(request.referrer)
 
 
 ########################### API Routes #############################
@@ -98,11 +103,15 @@ def get_cart():
 @app.route('/api/cart', methods=['POST'])
 def add_cart():
     data = request.json
-    cart = Cart(
-        quantity=data['quantity'], 
-        product_id=data['product_id'],
-    )
-    db.session.add(cart)
+    item = Cart.query.filter_by(product_id=data['product_id']).first()
+    if item :
+        item.quantity = item.quantity + 1
+    else :
+        item = Cart(
+            quantity=1, 
+            product_id=data['product_id'],
+        )
+    db.session.add(item)
     db.session.commit()
     return jsonify({'message': 'Created'})
 
@@ -111,7 +120,7 @@ def edit_cart(id):
     data = request.json
     cart = Cart.query.get(id)
     cart.quantity = data['quantity']
-    if data['quantity'] == 0:
+    if data['quantity'] == '0':
         db.session.delete(cart)
     else:
         db.session.add(cart)
