@@ -15,8 +15,6 @@
             overflow-y: scroll;
         }
 
-    
-
         #container{
             height: calc(100% - 64px);
         }
@@ -26,68 +24,14 @@
    <div id="catalog" class="row">
        <article class="col s8 scrollable">
 
-           <form method="GET" action="/" class="row">
-                <div class="input-field col s6 offset-s1">
-                    <i class="material-icons prefix">search</i>
-                    <textarea name="search" class="materialize-textarea"></textarea>
-                    <label for="icon_prefix2">Search</label>
-                </div>
-                <div class="input-field col s4">
-                    <button class="btn waves-effect waves-light" type="submit">
-                        Search
-                    </button>
-                </div>
-           </form>
-
-           <section class="row">
-                {% for product in products %}
-                <div class="col s12 m4">
-                    <div class="card">
-                        <div class="card-image">
-                            <img src="{{product.image}}">
-                        </div>
-                        <div class="card-content">
-                            <span class="card-title">{{product.name}}</span>
-                            <p>Price: $ {{ product.price }}</p>
-                        </div>
-                        <div class="card-action">
-                            <a href="/cart/{{product.id}}">Add to Cart</a>
-                        </div>
-                    </div>
-                </div>
-                 {% endfor %}
-           </section>
 
        </article>
        <aside class="col s4">
             <section class="scrollable" style="max-height: 80%">
-                <ul class="collection">
-                    {% for item in cart %}
-                    <li class="collection-item">
-                        <form method="POST" action="/cart/{{ item.id }}">
-                            <p>Item: {{ item.product.name }}</p>
-                            <p>Price: {{ item.product.price }}</p>
-                            <div class="row">
-                                <div class="input-field col s8">
-                                    <input type="number" name="quantity" value="{{ item.quantity }}">
-                                    <label for="quantity">Quantity</label>
-                                </div>
-                                <input type="hidden" name="id" value="{{item.id}}">
-                                <div class="input-field col s4">
-                                    <button class="btn waves-effect waves-light" type="submit">
-                                        Update
-                                    </button>
-                                </div>
-                            </div>
-                            
 
-                        </form>
-                    </li>
-                    {% endfor %}
-                </ul>
             </section>
             <section class="col s12" style="height: 18%">
-                <p>Total : ${{ total }}</p>
+
             </section>
        </aside>
    </div>

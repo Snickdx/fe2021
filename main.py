@@ -20,112 +20,36 @@ app.app_context().push()
 
 ''' End Boilerplate Code '''
 
-def product_filter(search):
-    return Product.query.filter(
-        Product.name.like( '%'+search+'%' )
-        | Product.about.like( '%'+search+'%' )
-        | Product.category.like( '%'+search+'%' )
-    )
+def product_search(search):
+    # uncomment after models are implemented
+    # return Product.query.filter(
+    #     Product.name.like( '%'+search+'%' )
+    #     | Product.about.like( '%'+search+'%' )
+    #     | Product.category.like( '%'+search+'%' )
+    # )
+    pass
 
 def cart_total():
-    items = Cart.query.all()
-    total = 0
-    for item in items:
-        total += item.product.price * item.quantity
-    return total
+    # uncomment after models are implemented
+    # items = Cart.query.all()
+    # total = 0
+    # for item in items:
+    #     total += item.product.price * item.quantity
+    # return total
+    pass
 
-######################### View Routes ##############################
+######################### Template Routes ##############################
 
 @app.route('/')
 def index():
-    search = request.args.get('search')
-    products = None
-    if search:
-        products = product_filter(search)
-    else:
-        products = Product.query.all()
-    cart = Cart.query.all()
-    total = cart_total()
-    return render_template('app.html', products=products, cart=cart, total=total)
-
-@app.route('/cart/<id>', methods=['GET'])
-def add_action(id):
-    item = Cart.query.filter_by(product_id=id).first()
-    if item :
-        item.quantity = item.quantity + 1
-    else :
-        item = Cart(
-            quantity=1, 
-            product_id=id,
-        )
-    db.session.add(item)
-    db.session.commit()
-    return redirect(request.referrer)
-
-@app.route('/cart/<id>', methods=['POST'])
-def edit_action(id):
-    data = request.form
-    cart = Cart.query.get(id)
-    if data['quantity'] == '0':
-        db.session.delete(cart)
-    else:
-        cart.quantity = data['quantity'] 
-        db.session.add(cart)
-    db.session.commit()
-    return redirect(request.referrer)
+    return render_template('app.html')
 
 
 ########################### API Routes #############################
 
 @app.route('/app')
 def client_app():
-  return app.send_static_file('app.html')
-
-@app.route('/api/products', methods=['GET'])
-def get_products():
-    search = request.args.get('search')
-    products = None
-    if search:
-        products = product_filter(search)
-    else:
-        products = Product.query.all()
-    products = [product.toDict() for product in products]
-    return jsonify(products)
-
-@app.route('/api/cart', methods=['GET'])
-def get_cart():
-    cart = Cart.query.all()
-    cart = [item.toDict() for item in cart]
-    total = cart_total()
-
-    return jsonify({ "total":total,  "cart":cart} )
-
-@app.route('/api/cart', methods=['POST'])
-def add_cart():
-    data = request.json
-    item = Cart.query.filter_by(product_id=data['product_id']).first()
-    if item :
-        item.quantity = item.quantity + 1
-    else :
-        item = Cart(
-            quantity=1, 
-            product_id=data['product_id'],
-        )
-    db.session.add(item)
-    db.session.commit()
-    return jsonify({'message': 'Created'})
-
-@app.route('/api/cart/<id>', methods=['PUT'])
-def edit_cart(id):
-    data = request.json
-    cart = Cart.query.get(id)
-    cart.quantity = data['quantity']
-    if data['quantity'] == '0':
-        db.session.delete(cart)
-    else:
-        db.session.add(cart)
-    db.session.commit()
-    return jsonify({'message': 'Updated'})
+    return app.send_static_file('app.html')
 
 
 if __name__ == '__main__':

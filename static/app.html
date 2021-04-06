@@ -2,8 +2,7 @@
 <!doctype html>
 <html>
   <head>
-  
-     <!--Import Google Icon Font-->
+    <!--Import Google Icon Font-->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <!-- Compiled and minified CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
@@ -21,18 +20,6 @@
         body, .container{
             height: 100%;
         }
-    </style>
-
-  </head>
-  <body>
-    <nav class="purple">
-      <div class="nav-wrapper">
-        <a href="#!" class="brand-logo center">Ramazon</a>
-      </div>
-    </nav>
-    
-    <div id="container">
-    <style>
 
         article, aside, #catalog{
             height: 100%;
@@ -45,143 +32,34 @@
         #container{
             height: calc(100% - 64px);
         }
-
-
     </style>
-   <div id="catalog" class="row">
+  </head>
+  <body>
+    <nav class="purple">
+      <div class="nav-wrapper">
+        <a href="#!" class="brand-logo center">Ramazon</a>
+      </div>
+    </nav>
+    
+    <div id="container">
+        <div id="catalog" class="row">
        <article class="col s8 scrollable">
 
-           <form onsubmit="searchProducts(event)">
-                <div class="input-field col s6 offset-s1">
-                    <i class="material-icons prefix">search</i>
-                    <textarea name="search" class="materialize-textarea"></textarea>
-                    <label for="icon_prefix2">Search</label>
-                </div>
-                <div class="input-field col s4">
-                    <button class="btn waves-effect waves-light" type="submit">
-                        Search
-                    </button>
-                </div>
-           </form>
-
-        <section class="row" id="products">
-
-        </section>
 
 
        </article>
        <aside class="col s4">
             <section class="scrollable" style="max-height: 80%">
-                <ul class="collection" id="cart">    
-                    
-                </ul>
+         
             </section>
             <section class="col s12" style="height: 18%">
-                <p>Total : <span id="total"></span></p>
+              
             </section>
        </aside>
-   </div>
-</div>
+        </div>
+    </div>
     <script>
 
-        async function sendRequest(url, method, data){
-            const options = {method};
-            
-            if(data){
-                options.body = JSON.stringify(data);
-                options.headers = {'Content-Type':'application/json'};
-            }
-            let response = await fetch(url, options);
-            return response.json();
-        }
-
-        function displayProducts(products){
-            let html='';
-
-            for(let product of products){
-                html+=`
-                    <div class="col s12 m4">
-                        <div class="card">
-                            <div class="card-image">
-                                <img src="${product.image}">
-                            </div>
-                            <div class="card-content">
-                                <span class="card-title">${product.name}</span>
-                                <p>Price: $ ${product.price}</p>
-                            </div>
-                            <div class="card-action">
-                                <a href="#products" onclick="addToCart(${product.id})">Add to Cart</a>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }
-
-            document.querySelector('#products').innerHTML = html;
-        }
-
-        function displayCart(cart){
-            let html= '';
-            for( let item of cart.cart){
-                html+=`
-                    <li class="collection-item">
-                        <form  onsubmit="updateCart(event)">
-                            <p>Item: ${item.name}</p>
-                            <p>Price: ${item.price}</p>
-                            <div class="row">
-                                <div class="input-field col s8">
-                                    <input type="number" name="quantity" value="${item.quantity}">
-                                    <label for="quantity">Quantity</label>
-                                </div>
-                                <input type="hidden" name="id" value="${item.id}">
-                                <div class="input-field col s4">
-                                    <button class="btn waves-effect waves-light" type="submit">
-                                        Update
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
-                    </li>
-                `;
-            }
-            document.querySelector('#cart').innerHTML = html;
-            document.querySelector('#total').innerHTML = cart.total;
-             M.updateTextFields();
-        }
-
-        async function getProducts(search=''){
-            const products = await sendRequest('/api/products?search='+search, 'GET');
-            displayProducts(products);
-        }
-
-        async function getCart(){
-            const cart = await sendRequest('/api/cart', 'GET');
-            displayCart(cart);
-        }
-
-        function searchProducts(event){
-            event.preventDefault();
-            const search = event.target.elements['search'].value;
-            getProducts(search);
-        }   
-
-        async function addToCart(product_id){
-            event.preventDefault();
-            await sendRequest('/api/cart', 'POST', {product_id});
-            getCart();
-        }
-
-        async function updateCart(event){
-            event.preventDefault();
-            const quantity = event.target.elements['quantity'].value;
-            const id = event.target.elements['id'].value;
-            await sendRequest('/api/cart/'+id, 'PUT', { quantity});
-            getCart();
-
-        }
-
-        getProducts();
-        getCart();
 
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
